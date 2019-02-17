@@ -82,6 +82,7 @@
             this.label24 = new System.Windows.Forms.Label();
             this.btnDefaultStats = new System.Windows.Forms.Button();
             this.loadPSX = new System.Windows.Forms.Button();
+            this.btnHexOut = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -142,7 +143,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(100, 13);
             this.label3.TabIndex = 15;
-            this.label3.Text = "MateriaKeeper v1.1";
+            this.label3.Text = "MateriaKeeper v1.2";
             // 
             // dataGridView1
             // 
@@ -169,7 +170,7 @@
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.SystemColors.Info;
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label2.Location = new System.Drawing.Point(112, 96);
+            this.label2.Location = new System.Drawing.Point(302, 96);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(152, 15);
             this.label2.TabIndex = 54;
@@ -180,7 +181,7 @@
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.MistyRose;
             this.label6.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label6.Location = new System.Drawing.Point(112, 111);
+            this.label6.Location = new System.Drawing.Point(302, 111);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(256, 15);
             this.label6.TabIndex = 57;
@@ -563,7 +564,7 @@
             // 
             this.btnDefaultStats.Location = new System.Drawing.Point(13, 77);
             this.btnDefaultStats.Name = "btnDefaultStats";
-            this.btnDefaultStats.Size = new System.Drawing.Size(82, 23);
+            this.btnDefaultStats.Size = new System.Drawing.Size(83, 23);
             this.btnDefaultStats.TabIndex = 99;
             this.btnDefaultStats.Text = "Default Stats";
             this.btnDefaultStats.UseVisualStyleBackColor = true;
@@ -579,11 +580,22 @@
             this.loadPSX.UseVisualStyleBackColor = true;
             this.loadPSX.Click += new System.EventHandler(this.loadPSX_Click_1);
             // 
+            // btnHexOut
+            // 
+            this.btnHexOut.Location = new System.Drawing.Point(101, 106);
+            this.btnHexOut.Name = "btnHexOut";
+            this.btnHexOut.Size = new System.Drawing.Size(83, 23);
+            this.btnHexOut.TabIndex = 101;
+            this.btnHexOut.Text = "Create .TXT";
+            this.btnHexOut.UseVisualStyleBackColor = true;
+            this.btnHexOut.Click += new System.EventHandler(this.btnHexOut_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(773, 622);
+            this.Controls.Add(this.btnHexOut);
             this.Controls.Add(this.loadPSX);
             this.Controls.Add(this.btnDefaultStats);
             this.Controls.Add(this.label24);
@@ -718,6 +730,7 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Button btnDefaultStats;
         private System.Windows.Forms.Button loadPSX;
+        private System.Windows.Forms.Button btnHexOut;
     }
 }
 

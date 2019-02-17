@@ -93,6 +93,161 @@ namespace GuardScorpion
             RevertMateriaEffects(fileName);
         }
 
+        private void btnHexOut_Click(object sender, EventArgs e)
+        {
+            string fileName = lblFileName.Text;
+            string dirName = AppDomain.CurrentDomain.BaseDirectory + "\\MateriaOffsets.txt";
+            //string dirName = Path.GetDirectoryName(Application.ExecutablePath + "\\MateriaOffsets.txt");
+            //string dirName = Path.GetDirectoryName(appPath);
+
+            //dirName = dirName + @"\MatKeepHext.txt";
+
+            try
+            {
+                // Delete the file if it exists.
+                if (File.Exists(dirName))
+                {
+                    DialogResult result = MessageBox.Show(
+                        "Overwrite existing file?", "Warning",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result == DialogResult.Yes)
+                    {
+                        MessageBox.Show("Delete path: test");
+                        //File.Delete(dirName);
+                    }
+                    else if (result == DialogResult.No)
+                    {
+                        MessageBox.Show("No path: test");
+                        //code for No
+                    }
+                }
+
+                if (!File.Exists(dirName))
+                {
+                    try
+                    {
+                        using (BinaryWriter bw = new BinaryWriter(File.Open(fileName, FileMode.Open)))
+                        {
+                            //Grabs the ints of GridView and loads them into an Int Array
+
+                            /*The materia equip effects use 1 signed byte for the value.
+                              2nd byte depends on this first byte and will be 00 if the
+                              byte was positive, or FF if it was negative.
+
+                              The DataGridView is read into an Int array, and then converted
+                              into a byte array for re-insertion to the files. There are 320
+                              cells to be read and inserted.
+                            */
+
+                            int[] intValues = new int[320];
+                            int r = 0;
+                            int o = 0;
+                            int c = 0;
+                            int k = 0;
+
+                            while (o != 320)
+                            {
+                                //Gets the current row + column cell value and then
+                                //increments array index  and column for next step
+                                intValues[o] = dataGridView1.Rows[r].Cells[c].Value == null ? -1 : Convert.ToInt32(dataGridView1.Rows[r].Cells[c].Value);
+
+                                //Checks for a negative value, adds 255 if true
+                                //This makes the entry valid for signed byte conversion later
+                                if (intValues[o] < 0)
+                                {
+                                    intValues[o] = intValues[o] + 256;
+                                }
+                                o++; c++;
+
+                                //Adjusts every other byte based on value of previous byte
+                                //For positive/0 value, must be 0. For negative value, must be FF
+                                k = intValues[o - 1];
+                                if (k < 128)
+                                {
+                                    intValues[o] = 0;
+                                }
+                                else
+                                {
+                                    intValues[o] = 255;
+                                }
+                                o++; c++;
+
+                                //If reached last column, then reset and increment Row
+                                if (c > 15)
+                                {
+                                    c = 0;
+                                    r++;
+                                }
+                            }
+
+                            //Converts int array into byte array, then into a string array
+                            byte[] array = intValues.Select(b => (byte)b).ToArray();
+                            string convert = BitConverter.ToString(array).Replace("-", " ");
+
+                            //This loop attaches the offset for each materia equip effect
+                            //along with its hex values; this can be used either for reference
+                            //or copy-pasted straight into a hex-edit document.
+                            //For info on hexedit, check hextools here: http://forums.qhimm.com/index.php?topic=13574.0
+                            File.AppendAllText(dirName, "PC Offsets: Materia-Equip Effects" + Environment.NewLine);
+                            int start = 0;
+                            int length = 48;
+                            int offsetByte = 0x4FD8C8; //Starting offset, PC version
+                            string offsetString = "";
+                            string offsetPrint = "";
+                            for (int i = 0; i != 20; i++)
+                            {
+                                //Used for last string, to prevent an error trying to read
+                                //a space character that isn't at very end of string.
+                                if(i == 19)
+                                {
+                                    length = 47;
+                                }
+                                offsetString = offsetByte.ToString("X"); //Prints as hex rather than int
+                                offsetPrint = offsetString + " = " + convert.Substring(start, length) + Environment.NewLine;
+                                File.AppendAllText(dirName, offsetPrint);
+                                offsetByte = offsetByte + 16;
+                                start = start + 48; //Counts the characters, including spaces
+                            }
+
+                            //PSX Version of the printout
+                            File.AppendAllText(dirName, Environment.NewLine + "PSX Offsets: Materia-Equip Effects" + Environment.NewLine);
+                            start = 0;
+                            length = 48;
+                            offsetByte = 0x4FD88; //Starting offset, PSX version ntsc/eu version
+                            offsetString = "";
+                            offsetPrint = "";
+                            for (int i = 0; i != 20; i++)
+                            {
+                                //Used for last string, to prevent an error trying to read
+                                //a space character that isn't at very end of string.
+                                if (i == 19)
+                                {
+                                    length = 47;
+                                }
+                                offsetString = offsetByte.ToString("X"); //Prints as hex rather than int
+                                offsetPrint = offsetString + " = " + convert.Substring(start, length) + Environment.NewLine;
+                                File.AppendAllText(dirName, offsetPrint);
+                                offsetByte = offsetByte + 16;
+                                start = start + 48; //Counts the characters, including spaces
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error: Please check values entered are bewteen -127 > 128");
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: Please check a valid file was loaded.");
+            }
+
+
+
+        }
+
         private void btnUpdateExp_Click(object sender, EventArgs e)
         {
             string fileName = lblFileName.Text;
@@ -176,7 +331,7 @@ namespace GuardScorpion
             }
             catch
             {
-                MessageBox.Show("Error: Please check values entered are 0-255");
+                MessageBox.Show("Error: Please check values entered are bewteen -127 > 128");
             }
         }
 
@@ -218,7 +373,7 @@ namespace GuardScorpion
             }
             catch
             {
-                MessageBox.Show("Error: Please check values entered are 0-255");
+                MessageBox.Show("Error: Please check values entered are bewteen -127 > 128");
             }
         }
 
